@@ -1,0 +1,6 @@
+{
+  "name": "Mamdouh Mobile Store | متجر ممدوح للموبايلات",
+  "description": "متجر ممدوح للموبايلات بأرقى التصاميم وتجربة تصفح حريرية استثنائية. متجر تجريبي متكامل من تطوير عبد الله.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
