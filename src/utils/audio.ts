@@ -7,29 +7,41 @@ let audioCtx: AudioContext | null = null;
 let isMuted = false;
 
 function getAudioContext(): AudioContext | null {
-  if (typeof window === 'undefined') return null;
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (AudioContextClass) {
-      audioCtx = new AudioContextClass();
+  try {
+    if (typeof window === 'undefined') return null;
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  } catch {
+    return null;
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(() => {});
-  }
-  return audioCtx;
 }
 
 export function setAudioMuted(muted: boolean) {
   isMuted = muted;
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('mamdouh_audio_muted', muted ? '1' : '0');
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('mamdouh_audio_muted', muted ? '1' : '0');
+    }
+  } catch {
+    // Ignore storage restrictions in incognito / restricted webviews
   }
 }
 
 export function getAudioMuted(): boolean {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('mamdouh_audio_muted') === '1' || isMuted;
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('mamdouh_audio_muted') === '1' || isMuted;
+    }
+  } catch {
+    // Ignore
   }
   return isMuted;
 }

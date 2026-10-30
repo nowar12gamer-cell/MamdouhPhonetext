@@ -41,7 +41,14 @@ export const LoaderScreen: React.FC<LoaderScreenProps> = ({ onFinish }) => {
       });
     }, 60);
 
-    return () => clearInterval(interval);
+    const fallbackTimeout = setTimeout(() => {
+      onFinish();
+    }, 3500);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(fallbackTimeout);
+    };
   }, [onFinish]);
 
   return (
